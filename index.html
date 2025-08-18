@@ -481,7 +481,7 @@
     "Premium": {"50":349.99,"100":399.99,"500":449.99,"1000":599.99,"2000":699.99,"5000":799.99,"7500":949.99,"10000":1099.99,"15000":1349.99,"20000":1499.99,"20000+":"Custom Pricing"}
   };
 
-  // Toggle path visibility
+  // Toggle path visibility (no auto-scroll)
   qa('input[name=platform]').forEach(function(r){
     r.addEventListener('change', function(){
       var v = q('input[name=platform]:checked'); v = v ? v.value : '';
@@ -491,7 +491,7 @@
       show(q('#sec-ui-features'), v==='UI');
       show(q('#sec-addons'), true);
       q('#sec-result').classList.remove('show');
-      window.scrollTo({top:q('#sec-addons').offsetTop - 12, behavior:'smooth'});
+// no scroll here
     });
   });
 

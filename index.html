@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ShipStation Platform and Plan Recommender</title>
+<title>ShipStation Platform and Plan Guide</title>
 <style>
   :root{
     --bg:#0b0f14; --card:#121822; --muted:#9fb3c8; --text:#e6edf3;
@@ -32,10 +32,10 @@
   .grid{display:grid;gap:10px}
   @media(min-width:700px){.cols-2{grid-template-columns:1fr 1fr}}
 
-  /* Extra spacing and a subtle divider on desktop for two-column question groups */
+  /* Extra spacing and a subtle divider on desktop for two-column groups */
   @media(min-width:900px){
     .cols-2.extra-gap{gap:24px}
-    .cols-2.with-divider > *:nth-child(2n){ /* right column items */
+    .cols-2.with-divider > *:nth-child(2n){
       border-left:1px solid var(--border);
       padding-left:18px;
       margin-left:6px;
@@ -59,7 +59,7 @@
   .muted{color:var(--muted)}
   input:focus-visible + .opt-title, label.option:has(input:focus-visible){outline:3px solid var(--focus)}
 
-  /* collapsible details for examples and signals */
+  /* collapsible details */
   details.hint{margin:6px 0 0 28px}
   details.hint summary{cursor:pointer;color:var(--muted);list-style:none}
   details.hint summary::before{content:'▸';display:inline-block;margin-right:6px;transition:transform .15s ease}
@@ -68,15 +68,18 @@
   .hint-group{margin:4px 0}
   .hint-title{font-size:12px;color:#c9d7e1;text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px}
   .hint-line{font-size:13px;color:var(--muted)}
+
+  /* API shipments question gets extra separation */
+  .solo-block{margin-top:22px;padding-top:10px;border-top:1px dashed var(--border)}
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <!-- Default to UI logo; JS will swap on selection -->
-    <img class="brand" id="brandLogo" src="ShipStation%20BoxedLockup%20White%20CMYK%20(1).png" alt="ShipStation" />
+    <!-- Default is Auctane logo; JS will swap after first platform selection -->
+    <img class="brand" id="brandLogo" src="Auctane%20BoxedLockup%20White%20RGB.png" alt="Auctane" />
     <div>
-      <div class="title">ShipStation Platform and Plan Recommender</div>
+      <div class="title">ShipStation Platform and Plan Guide</div>
       <div class="subtitle">Mobile friendly guided discovery for field reps · Requirement based plan selection</div>
     </div>
     <div class="row">
@@ -238,8 +241,8 @@
       </fieldset>
     </div>
 
-    <!-- Step D: Shipments (added for API path) -->
-    <fieldset>
+    <!-- Step D: Shipments (extra spacing so it stands alone) -->
+    <fieldset class="solo-block">
       <legend>Estimated shipments each month?</legend>
       <select name="api_shipments" id="api_shipments">
         <option value="">Select...</option>
@@ -503,7 +506,8 @@
   var qa = function(sel,ctx){return Array.prototype.slice.call((ctx||document).querySelectorAll(sel))};
   var show = function(el,yes){ el.classList.toggle('hidden', !yes); };
 
-  // Logo paths (adjust if your images are in a folder)
+  // Logo paths
+  var LOGO_DEFAULT = 'Auctane%20BoxedLockup%20White%20RGB.png';
   var LOGO_UI  = 'ShipStation%20BoxedLockup%20White%20CMYK%20(1).png';
   var LOGO_API = 'Logo_ShipStationAPI_WhiteGreen_RGB.png';
 
@@ -529,7 +533,7 @@
       show(q('#sec-addons'), true);
       q('#sec-result').classList.remove('show');
 
-      // Swap the header logo
+      // Swap the header logo after first selection
       var logo = q('#brandLogo');
       if(v==='API'){ logo.src = LOGO_API; logo.alt='ShipStation API'; }
       else if(v==='UI'){ logo.src = LOGO_UI; logo.alt='ShipStation'; }
@@ -660,7 +664,6 @@
         }
       });
     } else if(platform==='API'){
-      // collect API discovery answers for export and recap
       ['api_print','api_dev','api_3pl','api_pe'].forEach(function(f){
         var sel = q('input[name='+f+']:checked'); if(sel && sel.value) answers[f] = sel.value;
       });
@@ -839,7 +842,8 @@
     q('#api_shipments').value = '';
     [q('#sec-api'),q('#sec-ui-users'),q('#sec-ui-shipments'),q('#sec-ui-features'),q('#sec-addons')].forEach(function(s){ s.classList.add('hidden'); });
     q('#sec-result').classList.remove('show');
-    q('#brandLogo').src = LOGO_UI; q('#brandLogo').alt='ShipStation';
+    // Reset logo to Auctane
+    q('#brandLogo').src = LOGO_DEFAULT; q('#brandLogo').alt='Auctane';
     window.scrollTo({top:0,behavior:'smooth'});
   });
 

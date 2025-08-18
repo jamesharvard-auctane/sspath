@@ -14,11 +14,12 @@
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,#0b0f14,#0b1016 40%,#0b0f14)}
   .container{max-width:980px;margin:0 auto;padding:20px}
   header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-  .brand{height:auto;max-width:220px;width:40vw;min-width:160px}
+  .brand{height:auto;max-width:240px;width:40vw;min-width:160px}
   .title{font-size:clamp(20px,2.6vw,28px);font-weight:700}
   .subtitle{color:var(--muted);font-size:14px}
   .pill{padding:6px 10px;border-radius:999px;background:#0e1420;border:1px solid var(--border);font-size:12px;color:var(--muted)}
   .row{display:flex;gap:8px;flex-wrap:wrap}
+
   .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
   .section-title{font-size:18px;font-weight:700;margin:6px 0 14px;border-left:4px solid var(--accent);padding-left:10px}
   fieldset{border:none;padding:0;margin:0 0 8px}
@@ -27,8 +28,20 @@
   label.option:hover{border-color:#2b3a4f}
   input[type=radio],input[type=checkbox]{width:18px;height:18px;margin-top:2px}
   .opt-title{font-weight:600}
+
   .grid{display:grid;gap:10px}
   @media(min-width:700px){.cols-2{grid-template-columns:1fr 1fr}}
+
+  /* Extra spacing and a subtle divider on desktop for two-column question groups */
+  @media(min-width:900px){
+    .cols-2.extra-gap{gap:24px}
+    .cols-2.with-divider > *:nth-child(2n){ /* right column items */
+      border-left:1px solid var(--border);
+      padding-left:18px;
+      margin-left:6px;
+    }
+  }
+
   select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0f1520;color:var(--text)}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
   .btn{appearance:none;border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;color:#061016;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 20px rgba(80,180,220,.35)}
@@ -60,8 +73,8 @@
 <body>
 <div class="container">
   <header>
-    <!-- Update src if your filename is different -->
- <img class="brand" src="./Auctane%20BoxedLockup%20White%20RGB.png" alt="Auctane">
+    <!-- Default to UI logo; JS will swap on selection -->
+    <img class="brand" id="brandLogo" src="ShipStation%20BoxedLockup%20White%20CMYK%20(1).png" alt="ShipStation" />
     <div>
       <div class="title">ShipStation Platform and Plan Recommender</div>
       <div class="subtitle">Mobile friendly guided discovery for field reps · Requirement based plan selection</div>
@@ -92,7 +105,7 @@
     <!-- Step A: Confirm API Fit -->
     <fieldset>
       <legend>Where do they want to print their labels?</legend>
-      <div class="grid cols-2">
+      <div class="grid cols-2 extra-gap with-divider">
         <label class="option">
           <input type="radio" name="api_print" value="their system">
           <div>
@@ -134,7 +147,7 @@
     <!-- Step B: Developer Resources -->
     <fieldset>
       <legend>Do they have access to developer resources?</legend>
-      <div class="grid cols-2">
+      <div class="grid cols-2 extra-gap with-divider">
         <label class="option">
           <input type="radio" name="api_dev" value="Yes">
           <div>
@@ -173,7 +186,7 @@
     </fieldset>
 
     <!-- Step C: Capabilities -->
-    <div class="grid cols-2">
+    <div class="grid cols-2 extra-gap with-divider">
       <fieldset>
         <legend>Do they need 3PL functionality?</legend>
         <label class="option">
@@ -224,6 +237,26 @@
         </label>
       </fieldset>
     </div>
+
+    <!-- Step D: Shipments (added for API path) -->
+    <fieldset>
+      <legend>Estimated shipments each month?</legend>
+      <select name="api_shipments" id="api_shipments">
+        <option value="">Select...</option>
+        <option>10</option>
+        <option>50</option>
+        <option>100</option>
+        <option>500</option>
+        <option>1,000</option>
+        <option>2,000</option>
+        <option>5,000</option>
+        <option>7,500</option>
+        <option>10,000</option>
+        <option>15,000</option>
+        <option>20,000</option>
+        <option>20,000+</option>
+      </select>
+    </fieldset>
   </section>
 
   <!-- UI Path: Users -->
@@ -231,9 +264,9 @@
     <div class="section-title">UI Path · Users</div>
     <fieldset>
       <legend>How many users do you need?</legend>
-      <div class="grid cols-2">
+      <div class="grid cols-2 extra-gap with-divider">
         <label class="option"><input type="radio" name="users" value="1 User"> <div><div class="opt-title">1 User</div></div></label>
-        <label class="option"><input type="radio" name="users" value="3 Users"> <div><div class="opt-title">3 Users</div></div></label>
+        <label class="option"><input type="radio" name="users" value="2-3 Users"> <div><div class="opt-title">2–3 Users</div></div></label>
         <label class="option"><input type="radio" name="users" value="4-10 Users"> <div><div class="opt-title">4–10 Users</div></div></label>
         <label class="option"><input type="radio" name="users" value="11-15 Users"> <div><div class="opt-title">11–15 Users</div></div></label>
       </div>
@@ -266,7 +299,7 @@
   <!-- UI Path: Features -->
   <section class="card hidden" id="sec-ui-features">
     <div class="section-title">UI Path · Features</div>
-    <div class="grid cols-2">
+    <div class="grid cols-2 extra-gap with-divider">
       <fieldset>
         <legend>International Shipping (Non Wallet)?</legend>
         <label class="option"><input type="radio" name="intl" value="No"> <div><div class="opt-title">No</div></div></label>
@@ -410,12 +443,12 @@
     </div>
   </section>
 
-  <!-- Add ons (kept the same) -->
+  <!-- Add ons -->
   <section class="card hidden" id="sec-addons">
     <div class="section-title">Add ons</div>
     <fieldset>
       <legend>Do they need any of these add ons?</legend>
-      <div class="grid cols-2">
+      <div class="grid cols-2 extra-gap with-divider">
         <label class="option"><input type="checkbox" name="addons" value="Fulfillment:0"> <div>
           <div class="opt-title">Fulfillment</div>
           <details class="hint"><summary>What this means</summary>
@@ -470,6 +503,10 @@
   var qa = function(sel,ctx){return Array.prototype.slice.call((ctx||document).querySelectorAll(sel))};
   var show = function(el,yes){ el.classList.toggle('hidden', !yes); };
 
+  // Logo paths (adjust if your images are in a folder)
+  var LOGO_UI  = 'ShipStation%20BoxedLockup%20White%20CMYK%20(1).png';
+  var LOGO_API = 'Logo_ShipStationAPI_WhiteGreen_RGB.png';
+
   var PLAN_ORDER = ['Free','Starter','Standard','Premium'];
   var PLAN_INDEX = {Free:0, Starter:1, Standard:2, Premium:3};
 
@@ -481,7 +518,7 @@
     "Premium": {"50":349.99,"100":399.99,"500":449.99,"1000":599.99,"2000":699.99,"5000":799.99,"7500":949.99,"10000":1099.99,"15000":1349.99,"20000":1499.99,"20000+":"Custom Pricing"}
   };
 
-  // Toggle path visibility (no auto-scroll)
+  // Toggle path visibility and swap logo (no auto-scroll)
   qa('input[name=platform]').forEach(function(r){
     r.addEventListener('change', function(){
       var v = q('input[name=platform]:checked'); v = v ? v.value : '';
@@ -491,7 +528,11 @@
       show(q('#sec-ui-features'), v==='UI');
       show(q('#sec-addons'), true);
       q('#sec-result').classList.remove('show');
-// no scroll here
+
+      // Swap the header logo
+      var logo = q('#brandLogo');
+      if(v==='API'){ logo.src = LOGO_API; logo.alt='ShipStation API'; }
+      else if(v==='UI'){ logo.src = LOGO_UI; logo.alt='ShipStation'; }
     });
   });
 
@@ -507,7 +548,7 @@
     switch(field){
       case 'users':
         if(value==='1 User') return new Set(['Free']);
-        if(value==='3 Users') return new Set(['Starter']);
+        if(value==='2-3 Users') return new Set(['Starter']);
         if(value==='4-10 Users') return new Set(['Standard']);
         if(value==='11-15 Users') return new Set(['Premium']);
         break;
@@ -553,10 +594,11 @@
   // API discovery recommendation
   function recommendAPI(){
     var answers = {
-      api_print: (q('input[name=api_print]:checked')||{}).value || '',
-      api_dev:   (q('input[name=api_dev]:checked')||{}).value   || '',
-      api_3pl:   (q('input[name=api_3pl]:checked')||{}).value   || '',
-      api_pe:    (q('input[name=api_pe]:checked')||{}).value    || ''
+      api_print:     (q('input[name=api_print]:checked')||{}).value || '',
+      api_dev:       (q('input[name=api_dev]:checked')||{}).value   || '',
+      api_3pl:       (q('input[name=api_3pl]:checked')||{}).value   || '',
+      api_pe:        (q('input[name=api_pe]:checked')||{}).value    || '',
+      api_shipments: (q('#api_shipments')||{value:''}).value        || ''
     };
 
     var suggestion = '';
@@ -618,10 +660,11 @@
         }
       });
     } else if(platform==='API'){
-      // collect API discovery answers just to include them in the JSON/export
+      // collect API discovery answers for export and recap
       ['api_print','api_dev','api_3pl','api_pe'].forEach(function(f){
         var sel = q('input[name='+f+']:checked'); if(sel && sel.value) answers[f] = sel.value;
       });
+      var apiship = q('#api_shipments').value; if(apiship) answers.api_shipments = apiship;
     }
 
     if(platform!=='UI'){
@@ -690,7 +733,8 @@
       api_print: 'Where to print labels: '+value,
       api_dev: 'Developer resources: '+value,
       api_3pl: '3PL functionality: '+value,
-      api_pe: 'Platform Elements: '+value
+      api_pe: 'Platform Elements: '+value,
+      api_shipments: 'Estimated shipments per month: '+value
     };
     return labels[field] || (field+': '+value);
   }
@@ -712,13 +756,13 @@
         ? apiRec.drivers.map(function(d){ return '<span class="badge">'+d+'</span>'; }).join('')
         : '<span class="muted">No specific drivers selected yet.</span>';
 
-      // Recap table for API path
       var rows = [
         ['Discovery Question','Answer'],
         ['Where to print labels', apiRec.answers.api_print || '—'],
         ['Developer resources',  apiRec.answers.api_dev   || '—'],
         ['3PL functionality',    apiRec.answers.api_3pl   || '—'],
-        ['Platform Elements',    apiRec.answers.api_pe    || '—']
+        ['Platform Elements',    apiRec.answers.api_pe    || '—'],
+        ['Estimated shipments each month', apiRec.answers.api_shipments || '—']
       ];
       recap.innerHTML =
         '<thead><tr><th>'+rows[0][0]+'</th><th>'+rows[0][1]+'</th></tr></thead>'+
@@ -745,7 +789,6 @@
         ? r.drivers.map(function(d){ return '<span class="badge">'+d+'</span>'; }).join('')
         : '<span class="muted">No higher plan drivers detected. Selection fits the base tier.</span>';
 
-      // Recap table for UI path
       var rows = [];
       rows.push(['Category','Answer']);
       [
@@ -793,8 +836,10 @@
   q('#btn-reset').addEventListener('click', function(){
     qa('input[type=radio],input[type=checkbox]').forEach(function(i){ i.checked=false; });
     q('#shipments').value = '';
+    q('#api_shipments').value = '';
     [q('#sec-api'),q('#sec-ui-users'),q('#sec-ui-shipments'),q('#sec-ui-features'),q('#sec-addons')].forEach(function(s){ s.classList.add('hidden'); });
     q('#sec-result').classList.remove('show');
+    q('#brandLogo').src = LOGO_UI; q('#brandLogo').alt='ShipStation';
     window.scrollTo({top:0,behavior:'smooth'});
   });
 
@@ -814,6 +859,7 @@
       lines.push('- Developer resources: ' + (a.answers.api_dev || '—'));
       lines.push('- 3PL functionality: ' + (a.answers.api_3pl || '—'));
       lines.push('- Platform Elements: ' + (a.answers.api_pe || '—'));
+      lines.push('- Estimated shipments each month: ' + (a.answers.api_shipments || '—'));
       lines.push('');
       lines.push('Add ons: ' + (base.addons.length? base.addons.map(cleanAddonName).join(', ') : 'None'));
     } else {

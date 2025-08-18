@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ShipStation API Discovery Guide</title>
+<style>
+  :root{
+    --bg:#0b0f14; --card:#121822; --muted:#9fb3c8; --text:#e6edf3;
+    --accent:#7cc4ff; --accent2:#4de1c1; --border:#1f2937; --focus:#7cc4ff55;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,#0b0f14,#0b1016 40%,#0b0f14)}
+  .container{max-width:980px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  .brand{height:auto;max-width:220px;width:40vw;min-width:160px}
+  .title{font-size:clamp(20px,2.6vw,28px);font-weight:700}
+  .subtitle{color:var(--muted);font-size:14px}
+  .pill{padding:6px 10px;border-radius:999px;background:#0e1420;border:1px solid var(--border);font-size:12px;color:var(--muted)}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .section-title{font-size:18px;font-weight:700;margin:6px 0 14px;border-left:4px solid var(--accent);padding-left:10px}
+  fieldset{border:none;padding:0;margin:0 0 8px}
+  legend{font-weight:600;margin-bottom:8px}
+  .grid{display:grid;gap:10px}
+  @media(min-width:700px){.cols-2{grid-template-columns:1fr 1fr}}
+  label.option{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0f1520;cursor:pointer}
+  label.option:hover{border-color:#2b3a4f}
+  input[type=radio],input[type=checkbox]{width:18px;height:18px;margin-top:2px}
+  .opt-title{font-weight:600}
+  .muted{color:var(--muted)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .btn{appearance:none;border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;color:#061016;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 20px rgba(80,180,220,.35)}
+  .btn.secondary{background:#101826;color:var(--text);border:1px solid var(--border)}
+  .btn.link{background:transparent;border:1px dashed var(--border);color:var(--text)}
+
+  .banner{border:1px dashed #2b3a4f;background:#0d1420;padding:14px;border-radius:12px;margin:12px 0}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .badge{border:1px solid var(--border);background:#0f1520;border-radius:10px;padding:6px 10px;font-size:12px}
+  .hidden{display:none !important}
+  .result{display:none}
+  .result.show{display:block}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
+  th{color:var(--muted);font-weight:600}
+
+  /* collapsible details for examples and signals */
+  details.hint{margin:6px 0 0 28px}
+  details.hint summary{cursor:pointer;color:var(--muted);list-style:none}
+  details.hint summary::before{content:'▸';display:inline-block;margin-right:6px;transition:transform .15s ease}
+  details.hint[open] summary::before{transform:rotate(90deg)}
+  details.hint .hint-lines{padding:6px 0 2px}
+  .hint-group{margin:4px 0}
+  .hint-title{font-size:12px;color:#c9d7e1;text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px}
+  .hint-line{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <!-- Update src to your actual filename or path -->
+    <img class="brand" src="auctane-logo.png" alt="Auctane" />
+    <div>
+      <div class="title">ShipStation API Discovery Guide</div>
+      <div class="subtitle">Lead with questions, then map signals to the right solution</div>
+    </div>
+    <div class="row">
+      <span class="pill">Discovery first</span>
+      <span class="pill">Clear next steps</span>
+      <span class="pill">Mobile friendly</span>
+    </div>
+  </header>
+
+  <!-- Section: Confirm API Fit -->
+  <section class="card" id="sec-fit">
+    <div class="section-title">Step 1 · Confirm API Fit</div>
+    <fieldset>
+      <legend>Where do they want to print their labels?</legend>
+      <div class="grid cols-2">
+        <label class="option">
+          <input type="radio" name="print_loc" value="their system">
+          <div>
+            <div class="opt-title">In their system</div>
+            <details class="hint"><summary>Examples and signals</summary>
+              <div class="hint-lines">
+                <div class="hint-group"><div class="hint-title">Listen for</div>
+                  <div class="hint-line">> We want labels generated from our WMS or ERP</div>
+                  <div class="hint-line">> We need to control label creation in our app or workflow</div>
+                  <div class="hint-line">> We prefer server to server automation</div>
+                </div>
+                <div class="hint-group"><div class="hint-title">Why API</div>
+                  <div class="hint-line">> Programmatic label creation, webhooks, and custom flows</div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </label>
+        <label class="option">
+          <input type="radio" name="print_loc" value="our app">
+          <div>
+            <div class="opt-title">In our app (ShipStation UI)</div>
+            <details class="hint"><summary>Examples and signals</summary>
+              <div class="hint-lines">
+                <div class="hint-group"><div class="hint-title">Listen for</div>
+                  <div class="hint-line">> Team wants to click and ship in a web app</div>
+                  <div class="hint-line">> Minimal dev time, fast start</div>
+                </div>
+                <div class="hint-group"><div class="hint-title">Next step</div>
+                  <div class="hint-line">> Use the UI planner instead of API</div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </label>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- Section: Dev Resources -->
+  <section class="card" id="sec-dev">
+    <div class="section-title">Step 2 · Developer Resources</div>
+    <fieldset>
+      <legend>Do they have access to developer resources?</legend>
+      <div class="grid cols-2">
+        <label class="option">
+          <input type="radio" name="dev" value="Yes">
+          <div>
+            <div class="opt-title">Yes</div>
+            <details class="hint"><summary>Examples and signals</summary>
+              <div class="hint-lines">
+                <div class="hint-group"><div class="hint-title">Listen for</div>
+                  <div class="hint-line">> We have engineers who can own the integration</div>
+                  <div class="hint-line">> We can work with REST APIs and webhooks</div>
+                </div>
+                <div class="hint-group"><div class="hint-title">Next step</div>
+                  <div class="hint-line">> Proceed with ShipStation API solutioning</div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </label>
+        <label class="option">
+          <input type="radio" name="dev" value="No">
+          <div>
+            <div class="opt-title">No</div>
+            <details class="hint"><summary>Examples and signals</summary>
+              <div class="hint-lines">
+                <div class="hint-group"><div class="hint-title">Listen for</div>
+                  <div class="hint-line">> We do not have developers or bandwidth</div>
+                  <div class="hint-line">> We want a partner to build and support it</div>
+                </div>
+                <div class="hint-group"><div class="hint-title">Next step</div>
+                  <div class="hint-line">> Connect with an API Partner for delivery</div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </label>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- Section: Required Capabilities -->
+  <section class="card" id="sec-caps">
+    <div class="section-title">Step 3 · Capabilities</div>
+    <div class="grid cols-2">
+      <fieldset>
+        <legend>Do they need 3PL functionality?</legend>
+        <label class="option">
+          <input type="radio" name="need_3pl" value="Yes">
+          <div>
+            <div class="opt-title">Yes</div>
+            <details class="hint"><summary>Examples and signals</summary>
+              <div class="hint-lines">
+                <div class="hint-group"><div class="hint-title">Listen for</div>
+                  <div class="hint-line">> They outsource fulfillment to third parties</div>
+                  <div class="hint-line">> They need to route orders to multiple providers</div>
+                </div>
+                <div class="hint-group"><div class="hint-title">Next step</div>
+                  <div class="hint-line">> Include 3PL workflows in the API design</div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </label>
+        <label class="option">
+          <input type="radio" name="need_3pl" value="No">
+          <div><div class="opt-title">No</div></div>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Do they need Platform Elements?</legend>
+        <label class="option">
+          <input type="radio" name="need_pe" value="Yes">
+          <div>
+            <div class="opt-title">Yes</div>
+            <details class="hint"><summary>Examples and signals</summary>
+              <div class="hint-lines">
+                <div class="hint-group"><div class="hint-title">Listen for</div>
+                  <div class="hint-line">> They want prebuilt, composable components for shipping flows</div>
+                  <div class="hint-line">> They need to accelerate time to value with hosted elements</div>
+                </div>
+                <div class="hint-group"><div class="hint-title">Next step</div>
+                  <div class="hint-line">> Recommend ShipStation API with Platform Elements</div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </label>
+        <label class="option">
+          <input type="radio" name="need_pe" value="No">
+          <div><div class="opt-title">No</div></div>
+        </label>
+      </fieldset>
+    </div>
+  </section>
+
+  <!-- Section: Results -->
+  <section class="card" id="sec-actions">
+    <div class="actions">
+      <button class="btn" id="btn-recommend">Show Recommendation</button>
+      <button class="btn secondary" id="btn-reset" type="button">Reset</button>
+    </div>
+  </section>
+
+  <section class="card result" id="sec-result">
+    <div class="section-title">Recommendation</div>
+    <div class="banner" id="rec-banner"></div>
+    <div class="badges" id="driver-badges"></div>
+    <table id="recap-table"></table>
+    <div class="actions">
+      <button class="btn link" id="btn-copy" type="button">Copy Summary</button>
+      <button class="btn link" id="btn-download" type="button">Download JSON</button>
+    </div>
+    <div class="subtitle muted" style="margin-top:10px">
+      The tool picks the clearest API route based on discovery answers and lists the drivers that led to the suggestion.
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var q = function(sel,ctx){return (ctx||document).querySelector(sel)};
+  var qa = function(sel,ctx){return Array.prototype.slice.call((ctx||document).querySelectorAll(sel))};
+
+  function collect(){
+    var answers = {
+      print_loc: (q('input[name=print_loc]:checked')||{}).value || '',
+      dev:       (q('input[name=dev]:checked')||{}).value || '',
+      need_3pl:  (q('input[name=need_3pl]:checked')||{}).value || '',
+      need_pe:   (q('input[name=need_pe]:checked')||{}).value || ''
+    };
+    return answers;
+  }
+
+  function recommend(){
+    var a = collect();
+    var drivers = [];
+    var suggestion = '';
+    var next = [];
+
+    // Gate: if they want UI, nudge to the UI planner
+    if(a.print_loc === 'our app'){
+      suggestion = 'ShipStation UI may be a better fit';
+      drivers.push('Label printing in our app selected');
+      next.push('Use the UI planner to map plan and features');
+      return {suggestion:suggestion, drivers:drivers, next:next, answers:a};
+    }
+
+    // Base suggestion for API route
+    if(a.dev === 'No'){
+      suggestion = 'Connect with an API Partner';
+      drivers.push('No developer resources');
+      next.push('Make a partner introduction and gather requirements');
+    } else if(a.dev === 'Yes'){
+      suggestion = 'ShipStation API';
+      drivers.push('Developer resources available');
+      next.push('Proceed with ShipStation API solutioning');
+    } else {
+      suggestion = 'ShipStation API';
+    }
+
+    // Modifiers
+    if(a.need_pe === 'Yes'){
+      suggestion = 'ShipStation API with Platform Elements';
+      drivers.push('Needs Platform Elements');
+      next.push('Include Platform Elements in the architecture and rollout plan');
+    }
+    if(a.need_3pl === 'Yes'){
+      if(suggestion.indexOf('with') === -1){
+        suggestion = 'ShipStation API with 3PL workflows';
+      } else {
+        suggestion = suggestion + ' and 3PL workflows';
+      }
+      drivers.push('Needs 3PL functionality');
+      next.push('Plan routing and order handoff design for 3PLs');
+    }
+
+    return {suggestion:suggestion, drivers:uniq(drivers), next:uniq(next), answers:a};
+  }
+
+  function uniq(arr){ return Array.from(new Set(arr)); }
+
+  function render(){
+    var r = recommend();
+    var banner = q('#rec-banner');
+    var badges = q('#driver-badges');
+    var recap = q('#recap-table');
+
+    // Banner
+    var nextHTML = r.next.length ? ('<div class="muted" style="margin-top:6px">Next steps: ' + r.next.join(' · ') + '</div>') : '';
+    banner.innerHTML =
+      '<div><strong>Suggested Route:</strong> ' + (r.suggestion || '—') + '</div>' +
+      nextHTML;
+
+    // Drivers
+    badges.innerHTML = r.drivers.length
+      ? r.drivers.map(function(d){ return '<span class="badge">'+d+'</span>'; }).join('')
+      : '<span class="muted">No specific drivers selected yet.</span>';
+
+    // Recap
+    var rows = [
+      ['Discovery Question','Answer'],
+      ['Where to print labels','' + (r.answers.print_loc || '—')],
+      ['Developer resources','' + (r.answers.dev || '—')],
+      ['3PL functionality','' + (r.answers.need_3pl || '—')],
+      ['Platform Elements','' + (r.answers.need_pe || '—')]
+    ];
+    recap.innerHTML =
+      '<thead><tr><th>'+rows[0][0]+'</th><th>'+rows[0][1]+'</th></tr></thead>'+
+      '<tbody>'+rows.slice(1).map(function(rw){ return '<tr><td>'+rw[0]+'</td><td>'+rw[1]+'</td></tr>'; }).join('')+'</tbody>';
+
+    q('#sec-result').classList.add('show');
+    window.scrollTo({top:q('#sec-result').offsetTop - 12, behavior:'smooth'});
+  }
+
+  q('#btn-recommend').addEventListener('click', render);
+
+  q('#btn-reset').addEventListener('click', function(){
+    qa('input[type=radio]').forEach(function(i){ i.checked=false; });
+    q('#sec-result').classList.remove('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  q('#btn-copy').addEventListener('click', function(){
+    var r = recommend();
+    var lines = [];
+    lines.push('Suggested Route: ' + r.suggestion);
+    if(r.next.length){ lines.push('Next steps: ' + r.next.join(' | ')); }
+    lines.push('');
+    lines.push('Drivers:');
+    if(r.drivers.length){ r.drivers.forEach(function(d){ lines.push('- ' + d); }); } else { lines.push('- None'); }
+    lines.push('');
+    lines.push('Answers:');
+    lines.push('- Where to print labels: ' + (r.answers.print_loc || '—'));
+    lines.push('- Developer resources: ' + (r.answers.dev || '—'));
+    lines.push('- 3PL functionality: ' + (r.answers.need_3pl || '—'));
+    lines.push('- Platform Elements: ' + (r.answers.need_pe || '—'));
+    var text = lines.join('\n');
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ alert('Summary copied to clipboard.'); });
+    } else {
+      var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Summary copied to clipboard.');
+    }
+  });
+
+  q('#btn-download').addEventListener('click', function(){
+    var r = recommend();
+    var blob = new Blob([JSON.stringify(r,null,2)], {type:'application/json'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'shipstation_api_discovery.json'; a.click(); URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>
